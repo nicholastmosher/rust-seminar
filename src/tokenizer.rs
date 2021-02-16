@@ -6,23 +6,23 @@
 //! from in the input string, and any add-on data that each token may require.
 
 #[derive(Debug)]
-struct Span {
+pub struct Span {
     start: usize,
     end: usize,
 }
 
 #[derive(Debug)]
-struct Ident<'a>(&'a str);
+pub struct Ident<'a>(&'a str);
 
 #[derive(Debug)]
-enum TokenType<'a> {
+pub enum TokenType<'a> {
     LeftParen,
     RightParen,
     Identifier(Ident<'a>),
 }
 
 #[derive(Debug)]
-struct Token<'a> {
+pub struct Token<'a> {
     /// The slice of the input string that this token was parsed from
     source: &'a str,
     /// The type of token that this is
@@ -31,6 +31,29 @@ struct Token<'a> {
     span: Span,
 }
 
+/// A Lexer that will take an input string and return Tokens of that input
+///
+/// Tokens are a way to simplify an input string. Instead of remembering
+/// every single character of the input, we just remember whether it was
+/// a parenthesis, or an identifier (e.g. a function name) or some kind of
+/// literal (like a number or string).
+///
+/// This Lexer returns tokens that reference the original string that they
+/// were read from. The lifetime `'a` represents the scope where the input
+/// string lives. Therefore, this lexer and any tokens it produces may not
+/// outlive the original string.
+///
+/// Think about the memory of the program in terms of the stack frames of the functions:
+///
+/// ```text
+/// +-----------main------------------+
+/// | ...                             |
+/// +-----get_some_string()-----------+
+/// |                                 |
+/// | let input = " ( + 1 2 ) "       |  <-- Think of lifetime 'a as this stack frame
+/// |                                 |
+/// +---lex_that_string(s: &'a str)---+
+/// ```
 struct Lexer<'a> {
     /// The input string that we are lexing tokens from
     input: &'a str,
