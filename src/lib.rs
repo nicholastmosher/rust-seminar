@@ -1,7 +1,5 @@
-
 mod traffic_light;
 mod contact_info;
-mod tokenizer;
 
 #[cfg(test)]
 mod tests {

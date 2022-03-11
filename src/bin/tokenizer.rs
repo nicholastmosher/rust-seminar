@@ -5,6 +5,21 @@
 //! information such as the type of each token, the location (span) where it came
 //! from in the input string, and any add-on data that each token may require.
 
+use std::io::BufRead;
+
+fn main() -> Result<(), String> {
+    let stdin = std::io::stdin();
+    let mut lines = stdin.lock().lines();
+    while let Some(Ok(line)) = lines.next() {
+        let lexer = Lexer::new(&line)?;
+        for token in lexer {
+            println!("{:?}", token);
+        }
+    }
+
+    Ok(())
+}
+
 #[derive(Debug)]
 pub struct Span {
     start: usize,
